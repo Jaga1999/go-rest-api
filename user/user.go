@@ -9,6 +9,7 @@ import (
 )
 
 var DB *gorm.DB
+var err error
 
 const DNS = "root:jaga@tcp(127.0.0.1:3306)/godb?charset=utf8mb4&parseTime=True&loc=Local"
 
@@ -20,7 +21,7 @@ type User struct {
 }
 
 func InitialMigration() {
-	DB, err := gorm.Open(mysql.Open(DNS), &gorm.Config{})
+	DB, err = gorm.Open(mysql.Open(DNS), &gorm.Config{})
 	if err != nil {
 		fmt.Println(err.Error())
 		panic("Cannot Connect to Database")
@@ -46,7 +47,7 @@ func SaveUser(c *fiber.Ctx) error {
 	if err := c.BodyParser(user); err != nil {
 		return c.Status(500).SendString(err.Error())
 	}
-	DB.Save(&user)
+	DB.Create(&user)
 	return c.JSON(&user)
 }
 
@@ -57,7 +58,7 @@ func DeleteUser(c *fiber.Ctx) error {
 	if user.Email == "" {
 		return c.Status(500).SendString("User Not available")
 	}
-	DB.Delete(&user, id)
+	DB.Delete(&user)
 	return c.SendString("User Deleted!")
 }
 
@@ -69,7 +70,7 @@ func UpdateUser(c *fiber.Ctx) error {
 		return c.Status(500).SendString("User Not available")
 	}
 
-	if err := c.BodyParser(user); err != nil {
+	if err := c.BodyParser(&user); err != nil {
 		return c.Status(500).SendString(err.Error())
 	}
 	DB.Save(&user)
