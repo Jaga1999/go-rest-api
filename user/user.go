@@ -2,16 +2,17 @@ package user
 
 import (
 	"fmt"
+	"log"
+	"os"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 var DB *gorm.DB
 var err error
-
-const DNS = "root:jaga@tcp(127.0.0.1:3306)/godb?charset=utf8mb4&parseTime=True&loc=Local"
 
 type User struct {
 	gorm.Model
@@ -21,6 +22,12 @@ type User struct {
 }
 
 func InitialMigration() {
+	err1 := godotenv.Load(".env")
+	if err1 != nil {
+		log.Fatal(err)
+	}
+	DNS := os.Getenv("DATABASE")
+
 	DB, err = gorm.Open(mysql.Open(DNS), &gorm.Config{})
 	if err != nil {
 		fmt.Println(err.Error())

@@ -20,6 +20,7 @@ func Routers(app *fiber.App) {
 }
 
 func main() {
+
 	user.InitialMigration()
 
 	app := fiber.New()
