@@ -26,6 +26,12 @@ func InitialMigration() {
 	if err1 != nil {
 		log.Fatal(err)
 	}
+	// Host:=     os.Getenv("DB_HOST"),
+	// Port:=     os.Getenv("DB_PORT"),
+	// User:=     os.Getenv("DB_USER"),
+	// Password:= os.Getenv("DB_PASS"),
+	// DBName:=   os.Getenv("DB_DBNAME"),
+	// SSLMode:=  os.Getenv("DB_SSLMODE"),
 	DNS := os.Getenv("DATABASE")
 
 	DB, err = gorm.Open(mysql.Open(DNS), &gorm.Config{})
@@ -33,6 +39,7 @@ func InitialMigration() {
 		fmt.Println(err.Error())
 		panic("Cannot Connect to Database")
 	}
+	fmt.Println("Connected to database")
 	DB.AutoMigrate(&User{})
 }
 
